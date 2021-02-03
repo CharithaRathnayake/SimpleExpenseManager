@@ -28,10 +28,10 @@ public class PersistentTransactionDAO implements TransactionDAO {
     public void logTransaction(Date date, String accountNo, ExpenseType expenseType, double amount) {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DatabaseHelper.COL_ACCOUNT_NO, accountNo); // Account No
+        values.put(DatabaseHelper.COL_ACCOUNT_NO, accountNo);
         values.put(DatabaseHelper.COL_EXPENSE_TYPE, expenseType.name()); // Bank Name
         values.put(DatabaseHelper.COL_AMOUNT, amount); // Holder Name
-        values.put(DatabaseHelper.COL_DATE, new SimpleDateFormat("dd/MM/YYYY", Locale.getDefault()).format(date)); // Holder Name
+        values.put(DatabaseHelper.COL_DATE, new SimpleDateFormat("yyyy-MM-dd").format(date)); // Date
 
         // Inserting Row
         db.insert(DatabaseHelper.TABLE_TRANSACTION, null, values);
@@ -53,7 +53,7 @@ public class PersistentTransactionDAO implements TransactionDAO {
                 Date date;
 
                 try {
-                    date = new SimpleDateFormat("dd/MM/YYYY", Locale.getDefault()).parse(cursor.getString(1));
+                    date = new SimpleDateFormat("yyyy-MM-dd").parse(cursor.getString(1));
                     Transaction transaction = new Transaction(
                             date,
                             cursor.getString(2),
@@ -86,7 +86,7 @@ public class PersistentTransactionDAO implements TransactionDAO {
                 Date date;
 
                 try {
-                    date = new SimpleDateFormat("dd/MM/YYYY", Locale.getDefault()).parse(cursor.getString(1));
+                    date = new SimpleDateFormat("yyyy-MM-dd").parse(cursor.getString(1));
                     Transaction transaction = new Transaction(
                             date,
                             cursor.getString(2),

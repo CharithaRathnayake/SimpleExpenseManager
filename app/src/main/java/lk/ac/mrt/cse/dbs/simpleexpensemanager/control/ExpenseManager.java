@@ -29,6 +29,7 @@ import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Account;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.ExpenseType;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Transaction;
 
+
 /**
  * The ExpenseManager acts as the mediator when performing transactions. This is an abstract class with an abstract
  * method to setup the DAO objects depending on the implementation.
@@ -36,6 +37,7 @@ import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Transaction;
 public abstract class ExpenseManager implements Serializable {
     private AccountDAO accountsHolder;
     private TransactionDAO transactionsHolder;
+    private Account account;
 
     /***
      * Get list of account numbers as String.
@@ -58,13 +60,19 @@ public abstract class ExpenseManager implements Serializable {
      * @throws InvalidAccountException
      */
     public void updateAccountBalance(String accountNo, int day, int month, int year, ExpenseType expenseType,
-                                     String amount) throws InvalidAccountException {
+                                     String amount) throws InvalidAccountException, ExpenseManagerException {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day);
         Date transactionDate = calendar.getTime();
 
         if (!amount.isEmpty()) {
             double amountVal = Double.parseDouble(amount);
+            account=accountsHolder.getAccount(accountNo);
+
+            if(((account.getBalance()-amountVal)<0) & expenseType==ExpenseType.EXPENSE){
+                String msg = "Account Balance is Insufficient!";
+                throw new InvalidAccountException(msg);
+            }
             transactionsHolder.logTransaction(transactionDate, accountNo, expenseType, amountVal);
             accountsHolder.updateBalance(accountNo, expenseType, amountVal);
         }

@@ -33,6 +33,7 @@ import android.widget.Spinner;
 
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.R;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.ExpenseManager;
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.exception.ExpenseManagerException;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.exception.InvalidAccountException;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.ExpenseType;
 
@@ -103,9 +104,10 @@ public class ManageExpensesFragment extends Fragment implements View.OnClickList
 
                 if (currentExpenseManager != null) {
                     try {
+                        System.out.println(ExpenseType.valueOf(type.toUpperCase()));
                         currentExpenseManager.updateAccountBalance(selectedAccount, day, month, year,
                                 ExpenseType.valueOf(type.toUpperCase()), amountStr);
-                    } catch (InvalidAccountException e) {
+                    } catch (InvalidAccountException | ExpenseManagerException e) {
                         new AlertDialog.Builder(this.getActivity())
                                 .setTitle(this.getString(R.string.msg_account_update_unable) + selectedAccount)
                                 .setMessage(e.getMessage())
